@@ -74,9 +74,10 @@ def save_data_s3(data: pd.DataFrame):
 		buffer = io.BytesIO()
 		data.to_csv(buffer, index=False)
 		data_str = buffer.getvalue()
+		key = save_folder+"/"+save_name+"."+save_format
 		client.put_object(
 			Bucket = save_bucket,
-			key = f"{save_folder}/{save_name+"."+save_format}",
+			Key = key,
 			Body = data_str
 		)
 		logging.info(f"Processed data uploaded to {save_bucket}- {save_folder}-{save_name}.{save_format}")

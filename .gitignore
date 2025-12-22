@@ -1,3 +1,5 @@
 Raw_data/
 __pycache__/
 src/.env
+notebooks/.env
+clear_code/infra/.terraform/

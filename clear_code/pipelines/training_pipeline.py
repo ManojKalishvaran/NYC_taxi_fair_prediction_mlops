@@ -2,8 +2,15 @@ import sagemaker
 from sagemaker.workflow.pipeline import Pipeline
 from sagemaker.workflow.steps import TrainingStep, ProcessingStep
 from sagemaker.sklearn.processing import SKLearnProcessor
+from sagemaker.processing import ProcessingInput, ProcessingOutput
 from sagemaker.sklearn.estimator import SKLearn
 from sagemaker.workflow.parameters import (ParameterString, ParameterInteger)
+from sagemaker.workflow.conditions import ConditionLessThanOrEqualTo
+from sagemaker.workflow.condition_step import ConditionStep
+from sagemaker.workflow.functions import JsonGet
+from sagemaker.workflow.properties import PropertyFile
+from sagemaker.workflow.functions import Join
+
 
 session = sagemaker.Session()
 role = "arn:aws:iam::818831377059:role/sagemaker_execusion_role"
@@ -77,9 +84,75 @@ training_step = TrainingStep(
     name="NYCTaxiTraining",
     estimator=estimator,
     inputs={
-        "train": f"s3://{processed_bucket}/processed/"
+        "train": Join(
+            on="/",
+            values=[processed_bucket, "processed"]
+        )
     }
 )
+
+
+# evaluation 
+evaluation_report = PropertyFile(
+    name="EvaluationReport",
+    output_name="evaluation",
+    path="evaluation.json"
+)
+
+eval_processor = SKLearnProcessor(
+    framework_version="1.2-1",
+    role=role,
+    instance_type="ml.t3.xlarge",
+    instance_count=1,
+    base_job_name="nyc-taxi-evaluation",
+    sagemaker_session=session,
+)
+
+evaluation_step = ProcessingStep(
+    name="NYCTaxiEvaluation",
+    processor=eval_processor,
+    inputs=[
+        ProcessingInput(
+            source=training_step.properties.ModelArtifacts.S3ModelArtifacts,
+            destination="/opt/ml/processing/model"
+        ),
+        ProcessingInput(
+            source=Join(
+                on="/",
+                values=[processed_bucket, "processed"]
+            ),
+            destination="/opt/ml/processing/test"
+        )
+    ],
+    outputs=[
+        ProcessingOutput(
+            source="/opt/ml/processing/evaluation",
+            output_name="evaluation"
+        )
+    ],
+    code="src/evaluation/evaluate.py",
+    property_files=[evaluation_report]
+)
+
+
+# condition
+rmse_condition = ConditionLessThanOrEqualTo(
+    left=JsonGet(
+        step_name=evaluation_step.name,
+        property_file=evaluation_report,
+        json_path="test_score.RMSE"
+    ),
+    right=4.5
+)
+
+condition_step = ConditionStep(
+    name="RMSECheck",
+    conditions=[rmse_condition],
+    if_steps=[],
+    else_steps=[]
+)
+
+
 
 # Pipeline definition
 
@@ -93,7 +166,9 @@ pipeline = Pipeline(
     ],
     steps=[
         processing_step,
-        training_step
+        training_step,
+        evaluation_step,
+        condition_step
     ],
     sagemaker_session=session
 )

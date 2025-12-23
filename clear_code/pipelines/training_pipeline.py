@@ -10,19 +10,20 @@ from sagemaker.workflow.condition_step import ConditionStep
 from sagemaker.workflow.functions import JsonGet
 from sagemaker.workflow.properties import PropertyFile
 from sagemaker.workflow.functions import Join
+from pipeline_config import RAW_BUCKT, RAW_FOLDER, PROCESSED_BUCKET, PROCESSED_FOLDER, ROLE
 
 
 session = sagemaker.Session()
-role = "arn:aws:iam::818831377059:role/sagemaker_execusion_role"
+role = ROLE
 
 raw_bucket = ParameterString(
 	name="RawDataBucket",
-	default_value="nyc-taxi-mlops-raw-data"
+	default_value=RAW_BUCKT
 )
 
 processed_bucket = ParameterString(
 	name="ProcessedBucket",
-	default_value="nyc-taxi-processed-818831377059"
+	default_value=PROCESSED_BUCKET
 )
 
 model_bucket = ParameterString(

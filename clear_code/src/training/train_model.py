@@ -103,11 +103,8 @@ def main():
     train_df, val_df = load_data()
     model = train_model(train_df)
     train_score = evaluate(model, train_df)
-
-    if val_df is not None:
-        val_score = evaluate(model, val_df)
         
-    print(f"{train_score = }")
+    logging.info(f"Training score: \n{train_score}")
     save_models(model)
  
 if __name__ == "__main__":

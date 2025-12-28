@@ -262,7 +262,7 @@ pipeline = Pipeline(
     ],
     sagemaker_session=session
 )
-#new line
+#new line updated
 
 if __name__ == "__main__":
     pipeline.upsert(role_arn=role)

@@ -1,5 +1,4 @@
-Raw_data/
+infra/.terraform/
 __pycache__/
-src/.env
 notebooks/.env
-clear_code/infra/.terraform/
+.vscode/

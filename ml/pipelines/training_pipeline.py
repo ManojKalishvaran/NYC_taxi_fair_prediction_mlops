@@ -265,5 +265,5 @@ pipeline = Pipeline(
 
 if __name__ == "__main__":
     pipeline.upsert(role_arn=role)
-    execution = pipeline.start()
-    print(f"Pipeline started: {execution.arn}")
+    # execution = pipeline.start()
+    # print(f"Pipeline started: {execution.arn}")

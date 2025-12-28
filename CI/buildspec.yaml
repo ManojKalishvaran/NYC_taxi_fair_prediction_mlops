@@ -1,0 +1,40 @@
+version: 0.2
+
+env:
+  variables:
+    AWS_DEFAULT_REGION: us-east-1
+
+phases:
+  install:
+    runtime-versions:
+      python: 3.10
+    commands:
+      - echo "=== CI INSTALL PHASE ==="
+      - python --version
+      - pip install --upgrade pip
+
+      # Core dependencies only (keep CI light)
+      - pip install boto3 sagemaker pandas scikit-learn joblib
+
+  pre_build:
+    commands:
+      - echo "=== CI PRE-BUILD PHASE ==="
+      - echo "Validating repository structure"
+      - ls -la
+      - ls -la ml
+      - ls -la ml/pipelines
+      - ls -la ml/src
+
+  build:
+    commands:
+      - echo "=== CI BUILD PHASE ==="
+      - echo "Validating SageMaker TRAINING pipeline definition"
+      - python ml/pipelines/training_pipeline.py
+
+      - echo "Validating SageMaker DEPLOYMENT pipeline definition"
+      - python ml/pipelines/deployment_pipeline.py
+
+  post_build:
+    commands:
+      - echo "=== CI POST-BUILD PHASE ==="
+      - echo "CI validation completed successfully"

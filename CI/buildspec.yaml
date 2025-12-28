@@ -32,7 +32,7 @@ phases:
       - python ml/pipelines/training_pipeline.py --validate-only
 
       - echo "Validating SageMaker DEPLOYMENT pipeline definition"
-      - python ml/pipelines/deployment_pipeline.py
+      - python ml/pipelines/deployment_pipeline.py --validate-only
 
   post_build:
     commands:

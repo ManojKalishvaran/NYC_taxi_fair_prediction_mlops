@@ -29,7 +29,7 @@ phases:
     commands:
       - echo "=== CI BUILD PHASE ==="
       - echo "Validating SageMaker TRAINING pipeline definition"
-      - python ml/pipelines/training_pipeline.py
+      - python ml/pipelines/training_pipeline.py --validate-only
 
       - echo "Validating SageMaker DEPLOYMENT pipeline definition"
       - python ml/pipelines/deployment_pipeline.py

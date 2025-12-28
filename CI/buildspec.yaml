@@ -7,14 +7,14 @@ env:
 phases:
   install:
     runtime-versions:
-      python: 3.10
+      python: 3.10.18
     commands:
       - echo "=== CI INSTALL PHASE ==="
       - python --version
       - pip install --upgrade pip
 
       # Core dependencies only (keep CI light)
-      - pip install boto3 sagemaker pandas scikit-learn joblib
+      - pip install boto3 sagemaker==2.255.0
 
   pre_build:
     commands:

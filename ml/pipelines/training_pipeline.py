@@ -250,7 +250,7 @@ def build_pipeline(register_model: bool) -> Pipeline:
         sagemaker_session=session,
     )
 
-#updates 1 2 3 4
+#updates 1 2 3 4 5
 
 # ---------------------------------------------------------------------
 # ENTRYPOINT

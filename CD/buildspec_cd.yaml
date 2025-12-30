@@ -15,7 +15,7 @@ phases:
 
   pre_build:
     commands:
-      - echo "CD Stage-1: Pipeline upsert"
+      - echo "CD Stage-1 Pipeline upsert"
       - python --version
       - ls -la
 

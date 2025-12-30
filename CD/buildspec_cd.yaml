@@ -22,7 +22,7 @@ phases:
   build:
     commands:
       - echo "Upserting SageMaker training pipeline"
-      - python pipelines/training_pipeline.py --execute
+      - python ml/pipelines/training_pipeline.py --execute
 
   post_build:
     commands:

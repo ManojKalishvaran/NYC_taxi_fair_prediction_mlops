@@ -265,7 +265,9 @@ if __name__ == "__main__":
     elif args.execute:
         pipeline = build_pipeline(register_model=True)
         pipeline.upsert(role_arn=role)
-        print("🚀 Pipeline upserted successfully")
+        executed = pipeline.start()
+
+        print(f"🚀 Pipeline upserted & started successfully: ARN - {executed.arn}")
 
     else:
         raise RuntimeError(

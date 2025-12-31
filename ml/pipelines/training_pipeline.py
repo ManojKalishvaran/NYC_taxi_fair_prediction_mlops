@@ -79,7 +79,7 @@ processing_step = ProcessingStep(
             destination=Join(on="/", values=["s3:/", unified_bucket, "data/processed/v1"]),
         )
     ],
-    code="src/preprocessing/load_data.py",
+    code="ml/src/preprocessing/load_data.py",
     job_arguments=[
         "--input_file_path", "/opt/ml/processing/input/yellow_tripdata_v1.parquet",
         "--output_train_file_path", "/opt/ml/processing/output/train.csv",
@@ -93,7 +93,7 @@ processing_step = ProcessingStep(
 # ---------------------------------------------------------------------
 estimator = SKLearn(
     entry_point="train_model.py",
-    source_dir="src/training",
+    source_dir="ml/src/training",
     framework_version="1.2-1",
     role=role,
     instance_type="ml.m5.xlarge",
@@ -162,7 +162,7 @@ evaluation_step = ProcessingStep(
             destination=Join(on="/", values=["s3:/", unified_bucket, "evaluation"]),
         )
     ],
-    code="src/evaluation/evaluate.py",
+    code="ml/src/evaluation/evaluate.py",
     job_arguments=[
         "--model_name", "model.pkl",
         "--model_dir", "/opt/ml/processing/model",
@@ -213,7 +213,7 @@ def build_pipeline(register_model: bool) -> Pipeline:
             model_data=training_step.properties.ModelArtifacts.S3ModelArtifacts,
             role=role,
             entry_point="train_model.py",
-            source_dir="src/training",
+            source_dir="ml/src/training",
             framework_version="1.2-1",
             sagemaker_session=session,
         )
